@@ -95,6 +95,16 @@ public class PingWheelSettingsScreen extends Screen {
 
 		this.list.addOptionEntry(itemIconsVisibleOption, pingDurationOption);
 
+		var pingCountOption = new DoubleOption(
+				"ping-wheel.settings.pingCount",
+				1, 8, 1,
+				(gameOptions) -> (double)config.getPingMaxCount(),
+				(gameOptions, pingCount) -> config.setPingMaxCount(pingCount.intValue()),
+				(gameOptions, option) -> new TranslatableText("ping-wheel.settings.pingMaxCount", config.getPingMaxCount())
+		);
+
+		this.list.addSingleOptionEntry(pingCountOption);
+
 		this.channelTextField = new TextFieldWidget(this.textRenderer, this.width / 2 - 100, 140, 200, 20, Text.of(""));
 		this.channelTextField.setMaxLength(128);
 		this.channelTextField.setText(config.getChannel());

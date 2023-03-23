@@ -145,6 +145,10 @@ object Core {
 			ping.aliveTime = time - ping.spawnTime
 		}
 
+		if (pingRepo.count() > config.pingMaxCount) {
+			pingRepo.removeAll(pingRepo.sortedBy { it.aliveTime }.subList(config.pingMaxCount, pingRepo.count()))
+		}
+
 		pingRepo.removeIf { p -> p.aliveTime!! > config.pingDuration * TPS }
 	}
 
