@@ -149,7 +149,7 @@ object Core {
 						ping.color = ColorHelper.Argb.getArgb(255, 255, 85, 85)
 					}
 					else if (ent is Angerable) {
-						ping.color = ColorHelper.Argb.getArgb(255, 187, 255, 85)
+						ping.color = ColorHelper.Argb.getArgb(255, 255, 187, 85)
 					}
 					else {
 						ping.color = ColorHelper.Argb.getArgb(255, 85, 170, 225)
