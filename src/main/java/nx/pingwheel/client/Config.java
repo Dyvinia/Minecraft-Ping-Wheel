@@ -12,7 +12,7 @@ public class Config {
 	int pingDistance = 2048;
 	boolean itemIconVisible = true;
 	int pingDuration = 7;
-	int pingMaxCount = 4;
+	int pingMaxCount = 8;
 	String channel = "";
 
 	// manual getters for kotlin compatibility

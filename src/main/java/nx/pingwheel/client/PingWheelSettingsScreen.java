@@ -97,7 +97,7 @@ public class PingWheelSettingsScreen extends Screen {
 
 		var pingCountOption = new DoubleOption(
 				"ping-wheel.settings.pingCount",
-				1, 8, 1,
+				1, 16, 1,
 				(gameOptions) -> (double)config.getPingMaxCount(),
 				(gameOptions, pingCount) -> config.setPingMaxCount(pingCount.intValue()),
 				(gameOptions, option) -> new TranslatableText("ping-wheel.settings.pingMaxCount", config.getPingMaxCount())
