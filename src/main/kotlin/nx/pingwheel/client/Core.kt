@@ -25,7 +25,7 @@ import nx.pingwheel.client.util.*
 import nx.pingwheel.shared.Constants
 import nx.pingwheel.shared.DirectionalSoundInstance
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
-import xaero.pac.common.server.ServerData
+import xaero.pac.OpenPartiesAndClaims
 import kotlin.math.PI
 import kotlin.math.max
 import kotlin.math.min
@@ -39,8 +39,6 @@ object Core {
 	private val config = PingWheelConfigHandler.getInstance().config
 	private var pingRepo = mutableListOf<PingData>()
 	private var queuePing = false
-
-	private var partyManager = ServerData.from(Game.server).partyManager
 
 	@JvmStatic
 	fun markLocation() {
@@ -57,7 +55,7 @@ object Core {
 		val cameraDirection = cameraEntity.getRotationVec(tickDelta)
 		val hitResult = RayCasting.traceDirectional(cameraDirection, tickDelta, min(REACH_DISTANCE, config.pingDistance.toDouble()), cameraEntity.isSneaking)
 		val username = (cameraEntity as ClientPlayerEntity).gameProfile.name
-		val opacParty = partyManager.getPartyByMember(cameraEntity.gameProfile.id)?.id?.toString()
+		val opacParty = OpenPartiesAndClaims.INSTANCE.clientDataInternal.clientPartyStorage.party?.id?.toString()
 
 		if (hitResult == null || hitResult.type == HitResult.Type.MISS) {
 			return
@@ -96,7 +94,7 @@ object Core {
 	) {
 		val channel = buf.readString()
 
-		val opacParty = partyManager.getPartyByMember(Game.player!!.uuid)?.id?.toString()
+		val opacParty = OpenPartiesAndClaims.INSTANCE.clientDataInternal.clientPartyStorage.party?.id?.toString()
 
 		if (channel != (opacParty ?: config.channel)) {
 			return
