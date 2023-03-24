@@ -1,16 +1,18 @@
 package nx.pingwheel.client
 
 import net.minecraft.item.ItemStack
+import net.minecraft.util.math.ColorHelper
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vector4f
 import java.util.UUID
 
 data class PingData(
-	var pos: Vec3d,
-	val uuid: UUID?,
-	val username: String,
-	var spawnTime: Int,
-	var aliveTime: Int? = null,
-	var screenPos: Vector4f? = null,
-	var itemStack: ItemStack? = null,
+		var pos: Vec3d,
+		val uuid: UUID?,
+		val username: String,
+		var spawnTime: Int,
+		var aliveTime: Int? = null,
+		var screenPos: Vector4f? = null,
+		var itemStack: ItemStack? = null,
+		var color: Int = ColorHelper.Argb.getArgb(255, 255, 255, 255),
 )

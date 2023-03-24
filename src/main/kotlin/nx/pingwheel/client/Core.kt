@@ -10,6 +10,8 @@ import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.ItemEntity
+import net.minecraft.entity.mob.Angerable
+import net.minecraft.entity.mob.Monster
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.sound.SoundCategory
 import net.minecraft.util.hit.EntityHitResult
@@ -141,6 +143,16 @@ object Core {
 					if (ent.type == EntityType.ITEM && config.itemIconVisible) {
 						val itemEnt = ent as ItemEntity
 						ping.itemStack = itemEnt.stack.copy()
+						ping.color = ColorHelper.Argb.getArgb(255, 170, 170, 170)
+					}
+					else if (ent is Monster) {
+						ping.color = ColorHelper.Argb.getArgb(255, 255, 85, 85)
+					}
+					else if (ent is Angerable) {
+						ping.color = ColorHelper.Argb.getArgb(255, 187, 255, 85)
+					}
+					else {
+						ping.color = ColorHelper.Argb.getArgb(255, 85, 170, 225)
 					}
 
 					ping.pos = ent.getLerpedPos(tickDelta).add(0.0, ent.boundingBox.yLength, 0.0)
@@ -169,7 +181,7 @@ object Core {
 			val distanceToPing = cameraPosVec.distanceTo(ping.pos).toFloat()
 			val pingScale = getDistanceScale(distanceToPing) / uiScale.toFloat() * uiScaleAdjustment
 
-			val white = ColorHelper.Argb.getArgb(255, 255, 255, 255)
+			val pingColor = ping.color
 			val shadowBlack = ColorHelper.Argb.getArgb(64, 0, 0, 0)
 
 			stack.push() // push
@@ -189,7 +201,7 @@ object Core {
 			stack.translate(distanceTextOffset.x.toDouble(), distanceTextOffset.y.toDouble(), 0.0)
 
 			DrawableHelper.fill(stack, -2, -2, distanceTextMetrics.x.toInt() + 1, distanceTextMetrics.y.toInt(), shadowBlack)
-			Game.textRenderer.draw(stack, distanceText, 0f, 0f, white)
+			Game.textRenderer.draw(stack, distanceText, 0f, 0f, pingColor)
 
 			stack.pop() // pop text
 
@@ -205,7 +217,7 @@ object Core {
 			stack.translate(usernameTextOffset.x.toDouble(), usernameTextOffset.y.toDouble(), 0.0)
 
 			DrawableHelper.fill(stack, -2, -2, usernameTextMetrics.x.toInt() + 1, usernameTextMetrics.y.toInt(), shadowBlack)
-			Game.textRenderer.draw(stack, usernameText, 0f, 0f, white)
+			Game.textRenderer.draw(stack, usernameText, 0f, 0f, pingColor)
 
 			stack.pop() // pop text
 
@@ -223,7 +235,7 @@ object Core {
 			} else {
 				stack.rotateZ(PI.toFloat() / 4f)
 				stack.translate(-2.5, -2.5, 0.0)
-				DrawableHelper.fill(stack, 0, 0, 5, 5, white)
+				DrawableHelper.fill(stack, 0, 0, 5, 5, pingColor)
 			}
 
 			stack.pop() // pop
