@@ -8,6 +8,7 @@ import java.util.UUID
 data class PingData(
 	var pos: Vec3d,
 	val uuid: UUID?,
+	val username: String,
 	var spawnTime: Int,
 	var aliveTime: Int? = null,
 	var screenPos: Vector4f? = null,

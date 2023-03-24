@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.network.ClientPlayNetworkHandler
+import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.ItemEntity
@@ -50,6 +51,7 @@ object Core {
 		val cameraEntity = Game.cameraEntity ?: return
 		val cameraDirection = cameraEntity.getRotationVec(tickDelta)
 		val hitResult = RayCasting.traceDirectional(cameraDirection, tickDelta, min(REACH_DISTANCE, config.pingDistance.toDouble()), cameraEntity.isSneaking)
+		val username = (cameraEntity as ClientPlayerEntity).gameProfile.name;
 
 		if (hitResult == null || hitResult.type == HitResult.Type.MISS) {
 			return
@@ -60,6 +62,8 @@ object Core {
 		packet.writeDouble(hitResult.pos.x)
 		packet.writeDouble(hitResult.pos.y)
 		packet.writeDouble(hitResult.pos.z)
+
+		packet.writeString(username)
 
 		if (hitResult.type == HitResult.Type.ENTITY) {
 			packet.writeBoolean(true)
@@ -101,10 +105,12 @@ object Core {
 			}
 		}
 
+		val username = buf.readString()
+
 		val uuid = if (buf.readBoolean()) buf.readUuid() else null
 
 		client.execute {
-			pingRepo.add(PingData(pingPos, uuid, Game.world?.time?.toInt() ?: 0))
+			pingRepo.add(PingData(pingPos, uuid, username, Game.world?.time?.toInt() ?: 0))
 
 			Game.soundManager.play(
 				DirectionalSoundInstance(
@@ -173,17 +179,33 @@ object Core {
 
 			stack.push() // push text
 
-			val text = "%.1fm".format(distanceToPing)
-			val textMetrics = Vec2f(
-				Game.textRenderer.getWidth(text).toFloat(),
+			val distanceText = "%.1fm".format(distanceToPing)
+			val distanceTextMetrics = Vec2f(
+				Game.textRenderer.getWidth(distanceText).toFloat(),
 				Game.textRenderer.fontHeight.toFloat()
 			)
-			val textOffset = textMetrics.multiply(-0.5f).add(Vec2f(0f, textMetrics.y * -1.5f))
+			val distanceTextOffset = distanceTextMetrics.multiply(-0.5f).add(Vec2f(0f, distanceTextMetrics.y * -3.0f))
 
-			stack.translate(textOffset.x.toDouble(), textOffset.y.toDouble(), 0.0)
+			stack.translate(distanceTextOffset.x.toDouble(), distanceTextOffset.y.toDouble(), 0.0)
 
-			DrawableHelper.fill(stack, -2, -2, textMetrics.x.toInt() + 1, textMetrics.y.toInt(), shadowBlack)
-			Game.textRenderer.draw(stack, text, 0f, 0f, white)
+			DrawableHelper.fill(stack, -2, -2, distanceTextMetrics.x.toInt() + 1, distanceTextMetrics.y.toInt(), shadowBlack)
+			Game.textRenderer.draw(stack, distanceText, 0f, 0f, white)
+
+			stack.pop() // pop text
+
+			stack.push() // push text
+
+			val usernameText = ping.username
+			val usernameTextMetrics = Vec2f(
+					Game.textRenderer.getWidth(usernameText).toFloat(),
+					Game.textRenderer.fontHeight.toFloat()
+			)
+			val usernameTextOffset = usernameTextMetrics.multiply(-0.5f).add(Vec2f(0f, usernameTextMetrics.y * -1.5f))
+
+			stack.translate(usernameTextOffset.x.toDouble(), usernameTextOffset.y.toDouble(), 0.0)
+
+			DrawableHelper.fill(stack, -2, -2, usernameTextMetrics.x.toInt() + 1, usernameTextMetrics.y.toInt(), shadowBlack)
+			Game.textRenderer.draw(stack, usernameText, 0f, 0f, white)
 
 			stack.pop() // pop text
 
