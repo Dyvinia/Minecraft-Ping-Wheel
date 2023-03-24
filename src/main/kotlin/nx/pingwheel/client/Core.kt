@@ -230,7 +230,7 @@ object Core {
 					(pingPosScreen.y / uiScale),
 					model,
 					stack,
-					pingScale * 2 / 3
+					pingScale
 				)
 			} else {
 				stack.rotateZ(PI.toFloat() / 4f)
