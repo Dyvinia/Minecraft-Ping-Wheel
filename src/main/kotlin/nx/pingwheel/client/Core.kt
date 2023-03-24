@@ -53,7 +53,7 @@ object Core {
 		val cameraEntity = Game.cameraEntity ?: return
 		val cameraDirection = cameraEntity.getRotationVec(tickDelta)
 		val hitResult = RayCasting.traceDirectional(cameraDirection, tickDelta, min(REACH_DISTANCE, config.pingDistance.toDouble()), cameraEntity.isSneaking)
-		val username = (cameraEntity as ClientPlayerEntity).gameProfile.name;
+		val username = (cameraEntity as ClientPlayerEntity).gameProfile.name
 
 		if (hitResult == null || hitResult.type == HitResult.Type.MISS) {
 			return
