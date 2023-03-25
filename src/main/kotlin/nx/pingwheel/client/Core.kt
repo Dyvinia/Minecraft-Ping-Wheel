@@ -159,7 +159,7 @@ object Core {
 						ping.color = ColorHelper.Argb.getArgb(255, 255, 187, 85)
 					}
 					else if (ent is MobEntity) {
-						ping.color = ColorHelper.Argb.getArgb(255, 68, 255, 68)
+						ping.color = ColorHelper.Argb.getArgb(255, 69, 255, 69)
 					}
 
 					ping.pos = ent.getLerpedPos(tickDelta).add(0.0, ent.boundingBox.yLength, 0.0)
@@ -189,7 +189,7 @@ object Core {
 			val pingScale = getDistanceScale(distanceToPing) / uiScale.toFloat() * uiScaleAdjustment
 
 			val pingColor = ping.color
-			val shadowBlack = ColorHelper.Argb.getArgb(64, 0, 0, 0)
+			val shadowBlack = ColorHelper.Argb.getArgb(69, 0, 0, 0)
 
 			stack.push() // push
 
