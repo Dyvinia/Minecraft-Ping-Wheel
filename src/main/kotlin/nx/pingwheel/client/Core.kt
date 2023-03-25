@@ -11,6 +11,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.EntityType
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.mob.Angerable
+import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.mob.Monster
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.sound.SoundCategory
@@ -157,7 +158,7 @@ object Core {
 					else if (ent is Angerable) {
 						ping.color = ColorHelper.Argb.getArgb(255, 255, 187, 85)
 					}
-					else {
+					else if (ent is MobEntity) {
 						ping.color = ColorHelper.Argb.getArgb(255, 68, 255, 68)
 					}
 
