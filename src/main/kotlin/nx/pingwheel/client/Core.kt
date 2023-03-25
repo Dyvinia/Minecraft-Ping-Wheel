@@ -148,14 +148,17 @@ object Core {
 						ping.itemStack = itemEnt.stack.copy()
 						ping.color = ColorHelper.Argb.getArgb(255, 170, 170, 170)
 					}
+					else if (ent.type == EntityType.PLAYER) {
+						ping.color = ColorHelper.Argb.getArgb(255, 69, 181, 255)
+					}
 					else if (ent is Monster) {
-						ping.color = ColorHelper.Argb.getArgb(255, 255, 85, 85)
+						ping.color = ColorHelper.Argb.getArgb(255, 255, 80, 80)
 					}
 					else if (ent is Angerable) {
 						ping.color = ColorHelper.Argb.getArgb(255, 255, 187, 85)
 					}
 					else {
-						ping.color = ColorHelper.Argb.getArgb(255, 85, 170, 225)
+						ping.color = ColorHelper.Argb.getArgb(255, 68, 255, 68)
 					}
 
 					ping.pos = ent.getLerpedPos(tickDelta).add(0.0, ent.boundingBox.yLength, 0.0)
@@ -199,12 +202,12 @@ object Core {
 				Game.textRenderer.getWidth(distanceText).toFloat(),
 				Game.textRenderer.fontHeight.toFloat()
 			)
-			val distanceTextOffset = distanceTextMetrics.multiply(-0.5f).add(Vec2f(0f, distanceTextMetrics.y * -3.0f))
+			val distanceTextOffset = distanceTextMetrics.multiply(-0.5f).add(Vec2f(0f, distanceTextMetrics.y * -1.5f))
 
 			stack.translate(distanceTextOffset.x.toDouble(), distanceTextOffset.y.toDouble(), 0.0)
 
 			DrawableHelper.fill(stack, -2, -2, distanceTextMetrics.x.toInt() + 1, distanceTextMetrics.y.toInt(), shadowBlack)
-			Game.textRenderer.draw(stack, distanceText, 0f, 0f, pingColor)
+			Game.textRenderer.drawWithShadow(stack, distanceText, 0f, 0f, pingColor)
 
 			stack.pop() // pop text
 
@@ -215,12 +218,12 @@ object Core {
 					Game.textRenderer.getWidth(usernameText).toFloat(),
 					Game.textRenderer.fontHeight.toFloat()
 			)
-			val usernameTextOffset = usernameTextMetrics.multiply(-0.5f).add(Vec2f(0f, usernameTextMetrics.y * -1.5f))
+			val usernameTextOffset = usernameTextMetrics.multiply(-0.5f).add(Vec2f(0f, usernameTextMetrics.y * -3.0f))
 
 			stack.translate(usernameTextOffset.x.toDouble(), usernameTextOffset.y.toDouble(), 0.0)
 
 			DrawableHelper.fill(stack, -2, -2, usernameTextMetrics.x.toInt() + 1, usernameTextMetrics.y.toInt(), shadowBlack)
-			Game.textRenderer.draw(stack, usernameText, 0f, 0f, pingColor)
+			Game.textRenderer.drawWithShadow(stack, usernameText, 0f, 0f, pingColor)
 
 			stack.pop() // pop text
 
