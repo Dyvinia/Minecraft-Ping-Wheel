@@ -4,6 +4,7 @@ import net.minecraft.util.math.Matrix4f
 import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3d
 import net.minecraft.util.math.Vector4f
+import kotlin.math.roundToInt
 
 object Math {
 
@@ -14,7 +15,7 @@ object Math {
 
 	@JvmStatic
 	fun project3Dto2D(pos3D: Vec3d, modelViewMatrix: Matrix4f, projectionMatrix: Matrix4f): Vector4f? {
-		val in3D = Game.gameRenderer.camera.pos.negate().add(pos3D);
+		val in3D = Game.gameRenderer.camera.pos.negate().add(pos3D)
 
 		val wnd = Game.window
 		val quaternion = Quaternion(
@@ -22,7 +23,7 @@ object Math {
 			1f
 		)
 
-		val result = projectionMatrix.multiplyReturn(modelViewMatrix.multiplyReturn(quaternion));
+		val result = projectionMatrix.multiplyReturn(modelViewMatrix.multiplyReturn(quaternion))
 
 		if (result.w <= 0f) {
 			return null
@@ -36,6 +37,10 @@ object Math {
 			return null
 		}
 
-		return Vector4f(x, wnd.height - y, screenCoords.z, 1f / (screenCoords.w * 2f))
+		return Vector4f(
+				x.roundToInt().toFloat(),
+				(wnd.height - y).roundToInt().toFloat(),
+				screenCoords.z.roundToInt().toFloat(),
+				(1f / (screenCoords.w * 2f)).roundToInt().toFloat())
 	}
 }

@@ -27,10 +27,7 @@ import nx.pingwheel.shared.Constants
 import nx.pingwheel.shared.DirectionalSoundInstance
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 import xaero.pac.OpenPartiesAndClaims
-import kotlin.math.PI
-import kotlin.math.max
-import kotlin.math.min
-import kotlin.math.pow
+import kotlin.math.*
 
 object Core {
 
@@ -181,20 +178,18 @@ object Core {
 	fun onRenderGUI(stack: MatrixStack, ci: CallbackInfo) {
 		for (ping in pingRepo) {
 			val uiScale = Game.window.scaleFactor
-			val uiScaleAdjustment = Math.mapValue(uiScale.toFloat(), 1f, 5f, 1f, 2f)
 
 			val pingPosScreen = ping.screenPos ?: continue
 			val cameraPosVec = Game.player?.getCameraPosVec(Game.tickDelta) ?: continue
 			val distanceToPing = cameraPosVec.distanceTo(ping.pos).toFloat()
-			val pingScale = getDistanceScale(distanceToPing) / uiScale.toFloat() * uiScaleAdjustment
 
 			val pingColor = ping.color
-			val shadowBlack = ColorHelper.Argb.getArgb(69, 0, 0, 0)
+			val shadowBlack = ColorHelper.Argb.getArgb(85, 0, 0, 0)
 
 			stack.push() // push
 
 			stack.translate((pingPosScreen.x / uiScale), (pingPosScreen.y / uiScale), 0.0)
-			stack.scale(pingScale, pingScale, 1f)
+			stack.scale(1f, 1f, 1f)
 
 			stack.push() // push text
 
@@ -203,7 +198,8 @@ object Core {
 				Game.textRenderer.getWidth(distanceText).toFloat(),
 				Game.textRenderer.fontHeight.toFloat()
 			)
-			val distanceTextOffset = distanceTextMetrics.multiply(-0.5f).add(Vec2f(0f, distanceTextMetrics.y * -1.5f))
+			var distanceTextOffset = distanceTextMetrics.multiply(-0.5f).add(Vec2f(0f, distanceTextMetrics.y * -1f))
+			distanceTextOffset = Vec2f(distanceTextOffset.x.roundToInt().toFloat(), distanceTextOffset.y.roundToInt().toFloat())
 
 			stack.translate(distanceTextOffset.x.toDouble(), distanceTextOffset.y.toDouble(), 0.0)
 
@@ -219,8 +215,10 @@ object Core {
 					Game.textRenderer.getWidth(usernameText).toFloat(),
 					Game.textRenderer.fontHeight.toFloat()
 			)
-			val usernameTextOffset = usernameTextMetrics.multiply(-0.5f).add(Vec2f(0f, usernameTextMetrics.y * -3.0f))
+			var usernameTextOffset = usernameTextMetrics.multiply(-0.5f).add(Vec2f(-1f, usernameTextMetrics.y * -4f))
+			usernameTextOffset = Vec2f(usernameTextOffset.x.roundToInt().toFloat(), usernameTextOffset.y.roundToInt().toFloat())
 
+			stack.scale(0.5f, 0.5f, 0.5f)
 			stack.translate(usernameTextOffset.x.toDouble(), usernameTextOffset.y.toDouble(), 0.0)
 
 			DrawableHelper.fill(stack, -2, -2, usernameTextMetrics.x.toInt() + 1, usernameTextMetrics.y.toInt(), shadowBlack)
@@ -237,12 +235,14 @@ object Core {
 					(pingPosScreen.y / uiScale),
 					model,
 					stack,
-					pingScale
+					0.5f
 				)
 			} else {
 				stack.rotateZ(PI.toFloat() / 4f)
-				stack.translate(-2.5, -2.5, 0.0)
-				DrawableHelper.fill(stack, 0, 0, 5, 5, pingColor)
+				stack.translate(-2.0, -2.0, 0.0)
+				DrawableHelper.fill(stack, 0, 0, 4, 4, shadowBlack)
+				stack.translate(0.5, 0.5, 0.0)
+				DrawableHelper.fill(stack, 0, 0, 3, 3, pingColor)
 			}
 
 			stack.pop() // pop
