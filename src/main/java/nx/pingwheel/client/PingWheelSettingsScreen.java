@@ -61,7 +61,7 @@ public class PingWheelSettingsScreen extends Screen {
 
 		var pingDistanceOption = new DoubleOption(
 				"ping-wheel.settings.pingDistance",
-				0, 2048, 16,
+				0, 256, 16,
 				(gameOptions) -> (double)config.getPingDistance(),
 				(gameOptions, pingDistance) -> config.setPingDistance(pingDistance.intValue()),
 				(gameOptions, option) -> {
