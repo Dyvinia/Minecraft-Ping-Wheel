@@ -182,6 +182,7 @@ object Core {
 			val pingPosScreen = ping.screenPos ?: continue
 			val cameraPosVec = Game.player?.getCameraPosVec(Game.tickDelta) ?: continue
 			val distanceToPing = cameraPosVec.distanceTo(ping.pos).toFloat()
+			val distanceToScale = 10
 
 			val pingColor = ping.color
 			val shadowBlack = ColorHelper.Argb.getArgb(85, 0, 0, 0)
@@ -189,7 +190,7 @@ object Core {
 			stack.push() // push
 
 			stack.translate((pingPosScreen.x / uiScale), (pingPosScreen.y / uiScale), 0.0)
-			stack.scale(1f, 1f, 1f)
+			if (distanceToPing > distanceToScale) stack.scale(0.5f, 0.5f, 1f)
 
 			stack.push() // push text
 
@@ -215,10 +216,12 @@ object Core {
 					Game.textRenderer.getWidth(usernameText).toFloat(),
 					Game.textRenderer.fontHeight.toFloat()
 			)
-			var usernameTextOffset = usernameTextMetrics.multiply(-0.5f).add(Vec2f(-1f, usernameTextMetrics.y * -4f))
+			var usernameTextOffset = usernameTextMetrics.multiply(-0.5f)
+			if (distanceToPing < distanceToScale) usernameTextOffset = usernameTextOffset.add(Vec2f(-1f, usernameTextMetrics.y * -4f))
+			else usernameTextOffset = usernameTextOffset.add(Vec2f(-1f, usernameTextMetrics.y * -2.25f))
 			usernameTextOffset = Vec2f(usernameTextOffset.x.roundToInt().toFloat(), usernameTextOffset.y.roundToInt().toFloat())
 
-			stack.scale(0.5f, 0.5f, 0.5f)
+			if (distanceToPing < distanceToScale) stack.scale(0.5f, 0.5f, 1f)
 			stack.translate(usernameTextOffset.x.toDouble(), usernameTextOffset.y.toDouble(), 0.0)
 
 			DrawableHelper.fill(stack, -2, -2, usernameTextMetrics.x.toInt() + 1, usernameTextMetrics.y.toInt(), shadowBlack)
