@@ -9,7 +9,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class Config {
 	int pingVolume = 100;
-	int pingDistance = 128;
+	int pingDistance = 150;
 	boolean itemIconVisible = true;
 	int pingDuration = 7;
 	int pingMaxCount = 8;
