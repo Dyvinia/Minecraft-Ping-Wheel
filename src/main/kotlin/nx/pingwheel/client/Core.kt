@@ -144,7 +144,6 @@ object Core {
 					if (ent is ItemEntity && config.itemIconVisible) {
 						val itemEnt = ent as ItemEntity
 						ping.itemStack = itemEnt.stack.copy()
-						ping.color = ColorHelper.Argb.getArgb(255, 170, 170, 170)
 					}
 					else if (ent is PlayerEntity) {
 						ping.color = ColorHelper.Argb.getArgb(255, 69, 181, 255)
