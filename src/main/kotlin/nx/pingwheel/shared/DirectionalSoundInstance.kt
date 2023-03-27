@@ -36,7 +36,7 @@ class DirectionalSoundInstance(
 		val playerPos = Game.player?.pos ?: return this.setDone()
 
 		val vecBetween = playerPos.relativize(this.pos)
-		val mappedDistance = min(vecBetween.length(), 64.0) / 64.0 * 14.0
+		val mappedDistance = min(vecBetween.length(), 64.0) / 64.0 * 8.0
 		val soundDirection = vecBetween.normalize().multiply(mappedDistance)
 		val soundPos = playerPos.add(soundDirection)
 
