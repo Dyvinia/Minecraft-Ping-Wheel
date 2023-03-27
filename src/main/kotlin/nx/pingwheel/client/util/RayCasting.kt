@@ -1,6 +1,7 @@
 package nx.pingwheel.client.util
 
 import net.minecraft.entity.Entity
+import net.minecraft.entity.mob.MobEntity
 import net.minecraft.util.hit.EntityHitResult
 import net.minecraft.util.hit.HitResult
 import net.minecraft.util.math.Box
@@ -72,7 +73,7 @@ object RayCasting {
 			rayStartVec,
 			rayEndVec,
 			boundingBox,
-		) { targetEntity -> !targetEntity.isSpectator } ?: blockHitResult
+		) { targetEntity -> !targetEntity.isSpectator && targetEntity is MobEntity } ?: blockHitResult
 
 		if (rayStartVec.squaredDistanceTo(entityHitResult.pos) < rayStartVec.squaredDistanceTo(blockHitResult.pos)) {
 			return entityHitResult
