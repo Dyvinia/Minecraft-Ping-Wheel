@@ -8,11 +8,11 @@ import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.network.ClientPlayNetworkHandler
 import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.EntityType
 import net.minecraft.entity.ItemEntity
 import net.minecraft.entity.mob.Angerable
 import net.minecraft.entity.mob.MobEntity
 import net.minecraft.entity.mob.Monster
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.network.PacketByteBuf
 import net.minecraft.sound.SoundCategory
 import net.minecraft.util.hit.EntityHitResult
@@ -141,12 +141,12 @@ object Core {
 				val ent = world.entities.find { entity -> entity.uuid == ping.uuid }
 
 				if (ent != null) {
-					if (ent.type == EntityType.ITEM && config.itemIconVisible) {
+					if (ent is ItemEntity && config.itemIconVisible) {
 						val itemEnt = ent as ItemEntity
 						ping.itemStack = itemEnt.stack.copy()
 						ping.color = ColorHelper.Argb.getArgb(255, 170, 170, 170)
 					}
-					else if (ent.type == EntityType.PLAYER) {
+					else if (ent is PlayerEntity) {
 						ping.color = ColorHelper.Argb.getArgb(255, 69, 181, 255)
 					}
 					else if (ent is Monster) {
