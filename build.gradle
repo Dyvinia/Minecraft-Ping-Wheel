@@ -46,11 +46,9 @@ dependencies {
 	compileOnly "org.projectlombok:lombok:1.18.24"
 	annotationProcessor "org.projectlombok:lombok:1.18.24"
 
-	implementation 'com.electronwill.night-config:core:3.6.5'
-	implementation 'com.electronwill.night-config:toml:3.6.5'
-	modImplementation "curse.maven:fcapiport-547434:3943250"
-	//modImplementation "curse.maven:opac-636608:4428261"
-	modImplementation files("C:\\Users\\Dulana\\Downloads\\open-parties-and-claims-1.18.2\\open-parties-and-claims-1.18.2\\Fabric\\build\\libs\\open-parties-and-claims-fabric-1.18.2-0.17.0.jar")
+	modImplementation "curse.maven:architectury-419699:4384390"
+	modImplementation "curse.maven:ftblib-438495:4396791"
+	modImplementation "curse.maven:ftbteams-438497:4375187"
 }
 
 processResources {

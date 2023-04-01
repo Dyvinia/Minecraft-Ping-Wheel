@@ -1,5 +1,7 @@
 package nx.pingwheel.client
 
+import dev.ftb.mods.ftbteams.data.ClientTeamManager
+import dev.ftb.mods.ftbteams.data.TeamType
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs
 import net.fabricmc.fabric.api.networking.v1.PacketSender
@@ -26,7 +28,6 @@ import nx.pingwheel.client.util.*
 import nx.pingwheel.shared.Constants
 import nx.pingwheel.shared.DirectionalSoundInstance
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
-import xaero.pac.OpenPartiesAndClaims
 import kotlin.math.*
 
 object Core {
@@ -53,13 +54,18 @@ object Core {
 		val cameraDirection = cameraEntity.getRotationVec(tickDelta)
 		val hitResult = RayCasting.traceDirectional(cameraDirection, tickDelta, min(REACH_DISTANCE, config.pingDistance.toDouble()), cameraEntity.isSneaking)
 		val username = (cameraEntity as ClientPlayerEntity).gameProfile.name
-		val opacParty = OpenPartiesAndClaims.INSTANCE.clientDataInternal.clientPartyStorage.party?.id?.toString()
+
+		val clientTeam = ClientTeamManager.INSTANCE.selfTeam
+		var channel = config.channel
+		if (clientTeam.type == TeamType.PARTY) {
+			channel = clientTeam.id.toString()
+		}
 
 		if (hitResult == null || hitResult.type == HitResult.Type.MISS) {
 			return
 		}
 		val packet = PacketByteBufs.create()
-		packet.writeString(opacParty ?: config.channel)
+		packet.writeString(channel)
 		packet.writeDouble(hitResult.pos.x)
 		packet.writeDouble(hitResult.pos.y)
 		packet.writeDouble(hitResult.pos.z)
@@ -90,11 +96,14 @@ object Core {
 		buf: PacketByteBuf,
 		responseSender: PacketSender
 	) {
-		val channel = buf.readString()
+		val clientTeam = ClientTeamManager.INSTANCE.selfTeam
+		var currentChannel = config.channel
+		if (clientTeam.type == TeamType.PARTY) {
+			currentChannel = clientTeam.id.toString()
+		}
 
-		val opacParty = OpenPartiesAndClaims.INSTANCE.clientDataInternal.clientPartyStorage.party?.id?.toString()
-
-		if (channel != (opacParty ?: config.channel)) {
+		val pingChannel = buf.readString()
+		if (pingChannel != currentChannel) {
 			return
 		}
 
