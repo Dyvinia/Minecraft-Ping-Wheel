@@ -25,10 +25,6 @@ object Math {
 
 		val result = projectionMatrix.multiplyReturn(modelViewMatrix.multiplyReturn(quaternion))
 
-		if (result.w <= 0f) {
-			return null
-		}
-
 		val screenCoords = result.toScreen()
 		val x = screenCoords.x * wnd.width
 		val y = screenCoords.y * wnd.height
@@ -40,7 +36,7 @@ object Math {
 		return Vector4f(
 				x.roundToInt().toFloat(),
 				(wnd.height - y).roundToInt().toFloat(),
-				screenCoords.z.roundToInt().toFloat(),
-				(1f / (screenCoords.w * 2f)).roundToInt().toFloat())
+				screenCoords.z,
+				1f / (screenCoords.w * 2f))
 	}
 }

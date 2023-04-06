@@ -19,10 +19,7 @@ import net.minecraft.network.PacketByteBuf
 import net.minecraft.sound.SoundCategory
 import net.minecraft.util.hit.EntityHitResult
 import net.minecraft.util.hit.HitResult
-import net.minecraft.util.math.ColorHelper
-import net.minecraft.util.math.Matrix4f
-import net.minecraft.util.math.Vec2f
-import net.minecraft.util.math.Vec3d
+import net.minecraft.util.math.*
 import nx.pingwheel.PingWheel
 import nx.pingwheel.client.util.*
 import nx.pingwheel.shared.Constants
@@ -186,8 +183,16 @@ object Core {
 	fun onRenderGUI(stack: MatrixStack, ci: CallbackInfo) {
 		for (ping in pingRepo) {
 			val uiScale = Game.window.scaleFactor
+			val wnd = Game.window
 
-			val pingPosScreen = ping.screenPos ?: continue
+			val margin = 16f
+			var pingPosScreen = ping.screenPos ?: continue
+			if (pingPosScreen.w < 0) pingPosScreen = Vector4f(wnd.width - pingPosScreen.x, wnd.height - margin, pingPosScreen.z, -pingPosScreen.w)
+			if (pingPosScreen.x > wnd.width - margin) pingPosScreen = Vector4f(wnd.width - margin, pingPosScreen.y, pingPosScreen.z, pingPosScreen.w)
+			else if (pingPosScreen.x < margin) pingPosScreen = Vector4f(margin, pingPosScreen.y, pingPosScreen.z, pingPosScreen.w)
+			if (pingPosScreen.y > wnd.height - margin) pingPosScreen = Vector4f(pingPosScreen.x, wnd.height - margin, pingPosScreen.z, pingPosScreen.w)
+			else if (pingPosScreen.y < margin) pingPosScreen = Vector4f(pingPosScreen.x, margin, pingPosScreen.z, pingPosScreen.w)
+
 			val cameraPosVec = Game.player?.getCameraPosVec(Game.tickDelta) ?: continue
 			val distanceToPing = cameraPosVec.distanceTo(ping.pos).toFloat()
 			val distanceFade = 8
@@ -202,6 +207,31 @@ object Core {
 			if (distanceToPing > distanceFade) stack.scale(0.5f, 0.5f, 1f)
 
 			stack.push() // push text
+
+			if (pingPosScreen != ping.screenPos) {
+				stack.pop()
+				stack.scale(2f, 2f, 1f)
+				if (ping.itemStack != null && config.itemIconVisible) {
+					val model = Game.itemRenderer.getModel(ping.itemStack, null, null, 0)
+
+					Draw.renderGuiItemModel(
+						ping.itemStack,
+						(pingPosScreen.x / uiScale),
+						(pingPosScreen.y / uiScale),
+						model,
+						stack,
+						0.5f
+					)
+				} else {
+					stack.rotateZ(PI.toFloat() / 4f)
+					stack.translate(-2.0, -2.0, 0.0)
+					DrawableHelper.fill(stack, 0, 0, 4, 4, shadowBlack)
+					stack.translate(0.5, 0.5, 0.0)
+					DrawableHelper.fill(stack, 0, 0, 3, 3, pingColor)
+				}
+				stack.pop()
+				continue
+			}
 
 			val distanceText = "%.1fm".format(distanceToPing)
 			val distanceTextMetrics = Vec2f(
